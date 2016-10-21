@@ -1,0 +1,170 @@
+                        .module config.c
+                        .area text(rom, con, rel)
+ 0000                   .dbfile ./config.c
+ 0000                   .dbfile C:\Users\Ralf\DOCUME~1\DSM_SA~1\DSM_SA~1\DSM_SA~1\config.c
+ 0000                   .dbfunc e SaveConfig _SaveConfig fV
+ 0000           ;             Nr -> X-5
+ 0000           ;        options -> X-4
+ 0000           _SaveConfig::
+ 0000                   .dbline -1
+ 0000 10                push X
+ 0001 4F                mov X,SP
+ 0002                   .dbline 11
+ 0002           ; #include "config.h"
+ 0002           ; 
+ 0002           ; extern CHAR  E2PROM_1_bE2Write(WORD wAddr, BYTE * pbData, WORD wByteCount, CHAR cTemperature);
+ 0002           ; extern void  E2PROM_1_E2Read(WORD wAddr, BYTE * pbDataDest, WORD wByteCount);
+ 0002           ; 
+ 0002           ; 
+ 0002           ; RAM_D mem;
+ 0002           ; #define buf mem.buf
+ 0002           ; 
+ 0002           ; void SaveConfig(BYTE options,BYTE Nr)
+ 0002           ; {
+ 0002                   .dbline 12
+ 0002           ; Nr=Nr&0xF;
+ 0002 27FB0F            and [X-5],15
+ 0005                   .dbline 14
+ 0005           ; #ifndef DEBUG
+ 0005           ; E2PROM_1_E2Read(0,buf,32);
+ 0005 10                push X
+ 0006 5000              mov A,0
+ 0008 08                push A
+ 0009 5020              mov A,32
+ 000B 08                push A
+ 000C 5000              mov A,>_mem
+ 000E 08                push A
+ 000F 5000              mov A,<_mem
+ 0011 08                push A
+ 0012 5000              mov A,0
+ 0014 08                push A
+ 0015 08                push A
+ 0016 7C0000            xcall _E2PROM_1_E2Read
+ 0019 38FA              add SP,-6
+ 001B 20                pop X
+ 001C                   .dbline 16
+ 001C           ; #endif
+ 001C           ; buf[Nr*2]=CONFIG_ID;
+ 001C 52FB              mov A,[X-5]
+ 001E 64                asl A
+ 001F 0100              add A,<_mem
+ 0021 5300              mov [__r1],A
+ 0023 5021              mov A,33
+ 0025 3F00              mvi [__r1],A
+ 0027                   .dbline 17
+ 0027           ; buf[Nr*2+1]=options;
+ 0027 52FB              mov A,[X-5]
+ 0029 64                asl A
+ 002A 0101              add A,<_mem+1
+ 002C 5300              mov [__r1],A
+ 002E 52FC              mov A,[X-4]
+ 0030 3F00              mvi [__r1],A
+ 0032                   .dbline 19
+ 0032           ; #ifndef DEBUG
+ 0032           ; E2PROM_1_bE2Write(0,buf,64,25);
+ 0032 10                push X
+ 0033 5019              mov A,25
+ 0035 08                push A
+ 0036 5000              mov A,0
+ 0038 08                push A
+ 0039 5040              mov A,64
+ 003B 08                push A
+ 003C 5000              mov A,>_mem
+ 003E 08                push A
+ 003F 5000              mov A,<_mem
+ 0041 08                push A
+ 0042 5000              mov A,0
+ 0044 08                push A
+ 0045 08                push A
+ 0046 7C0000            xcall _E2PROM_1_bE2Write
+ 0049 38F9              add SP,-7
+ 004B 20                pop X
+ 004C                   .dbline -2
+ 004C           L3:
+ 004C 20                pop X
+ 004D                   .dbline 0 ; func end
+ 004D 7F                ret
+ 004E                   .dbsym l Nr -5 c
+ 004E                   .dbsym l options -4 c
+ 004E                   .dbend
+ 004E                   .dbfunc e ReadConfig _ReadConfig fc
+ 004E           ;             Nr -> X-4
+ 004E           _ReadConfig::
+ 004E                   .dbline -1
+ 004E 10                push X
+ 004F 4F                mov X,SP
+ 0050                   .dbline 24
+ 0050           ; #endif
+ 0050           ; }
+ 0050           ; 
+ 0050           ; BYTE ReadConfig(BYTE Nr)
+ 0050           ; {
+ 0050                   .dbline 25
+ 0050           ; Nr=Nr&0xF;
+ 0050 27FC0F            and [X-4],15
+ 0053                   .dbline 27
+ 0053           ; #ifndef DEBUG
+ 0053           ; E2PROM_1_E2Read(0,buf,32);
+ 0053 10                push X
+ 0054 5000              mov A,0
+ 0056 08                push A
+ 0057 5020              mov A,32
+ 0059 08                push A
+ 005A 5000              mov A,>_mem
+ 005C 08                push A
+ 005D 5000              mov A,<_mem
+ 005F 08                push A
+ 0060 5000              mov A,0
+ 0062 08                push A
+ 0063 08                push A
+ 0064 7C0000            xcall _E2PROM_1_E2Read
+ 0067 38FA              add SP,-6
+ 0069 20                pop X
+ 006A                   .dbline 29
+ 006A           ; #endif
+ 006A           ; if(buf[Nr*2]!=CONFIG_ID)
+ 006A 52FC              mov A,[X-4]
+ 006C 64                asl A
+ 006D 0100              add A,<_mem
+ 006F 5300              mov [__r1],A
+ 0071 3E00              mvi A,[__r1]
+ 0073 3921              cmp A,33
+ 0075 A005              jz L6
+ 0077                   .dbline 31
+ 0077           ;       {
+ 0077           ;               return 0;
+ 0077                   .dbline 31
+ 0077 5000              mov A,0
+ 0079 800A              xjmp L5
+ 007B           L6:
+ 007B                   .dbline 34
+ 007B           ;       }
+ 007B           ; else
+ 007B           ;       {
+ 007B                   .dbline 35
+ 007B           ;               return buf[Nr*2+1];
+ 007B 52FC              mov A,[X-4]
+ 007D 64                asl A
+ 007E 0101              add A,<_mem+1
+ 0080 5300              mov [__r1],A
+ 0082 3E00              mvi A,[__r1]
+ 0084                   .dbline -2
+ 0084           L5:
+ 0084 20                pop X
+ 0085                   .dbline 0 ; func end
+ 0085 7F                ret
+ 0086                   .dbsym l Nr -4 c
+ 0086                   .dbend
+                        .area bss(ram, con, rel)
+ 0000                   .dbfile C:\Users\Ralf\DOCUME~1\DSM_SA~1\DSM_SA~1\DSM_SA~1\config.c
+ 0000           _mem::
+ 0000                   .blkb 32
+ 0020                   .dbstruct 0 32 .1
+ 0020                   .dbfield 0 buf0 A[16:16]c
+ 0020                   .dbfield 16 buf1 A[16:16]c
+ 0020                   .dbend
+ 0020                   .dbunion 0 32 .2
+ 0020                   .dbfield 0 buf A[32:32]c
+ 0020                   .dbfield 0 b S[.1]
+ 0020                   .dbend
+ 0020                   .dbsym e mem _mem S[.2]

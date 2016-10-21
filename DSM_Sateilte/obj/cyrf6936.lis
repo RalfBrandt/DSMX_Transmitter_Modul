@@ -1,0 +1,1018 @@
+ 0000                   cpu LMM
+                        .module cyrf6936.c
+                        .area text(rom, con, rel)
+ 0000                   .dbfile ./cyrf6936.c
+ 0000                   .dbfile C:\Users\Ralf\DOCUME~1\DSM_SA~1\DSM_SA~1\DSM_SA~1\cyrf6936.c
+ 0000                   .dbfunc e GPIO_ISR _GPIO_ISR fV
+ 0000           _GPIO_ISR::
+ 0000                   .dbline -1
+ 0000 71C0              or F,-64
+ 0002 08                push A
+ 0003 5DD0              mov A,REG[0xd0]
+ 0005 08                push A
+ 0006 62D000            mov REG[0xd0],>__r0
+ 0009 5100              mov A,[__r0]
+ 000B 08                push A
+ 000C                   .dbline 11
+ 000C           ; #include "PSoCAPI.h"    // PSoC API definitions for all User Modules
+ 000C           ; #include "CYRF6936.h"
+ 000C           ; #include "delay.h"
+ 000C           ; #include "timer.h"
+ 000C           ; 
+ 000C           ; volatile BOOL CY_irq;
+ 000C           ; 
+ 000C           ; //called on a GPIO interrupt
+ 000C           ; #pragma interrupt_handler GPIO_ISR
+ 000C           ; void GPIO_ISR(void )
+ 000C           ; {
+ 000C                   .dbline 12
+ 000C           ;       if (PRT0DR&IRQPin_MASK) //Check if PPM output pin went high
+ 000C 5D00              mov A,REG[0]
+ 000E 62D000            mov REG[0xd0],>__r0
+ 0011 5300              mov [__r0],A
+ 0013 470040            tst [__r0],64
+ 0016 A007              jz L4
+ 0018                   .dbline 14
+ 0018           ;       {
+ 0018           ;               CY_irq=TRUE;
+ 0018                   .dbline 14
+ 0018 62D000            mov REG[0xd0],>_CY_irq
+ 001B 550001            mov [_CY_irq],1
+ 001E                   .dbline 15
+ 001E           ;       }
+ 001E           L4:
+ 001E                   .dbline -2
+ 001E           L3:
+ 001E 62D000            mov REG[0xD0],>__r0
+ 0021 18                pop A
+ 0022 5300              mov [__r0],A
+ 0024 18                pop A
+ 0025 60D0              mov REG[208],A
+ 0027 18                pop A
+ 0028                   .dbline 0 ; func end
+ 0028 7E                reti
+ 0029                   .dbend
+ 0029                   .dbfunc e CYRF_Init _CYRF_Init fc
+ 0029           ;              i -> X+0
+ 0029           _CYRF_Init::
+ 0029                   .dbline -1
+ 0029 10                push X
+ 002A 4F                mov X,SP
+ 002B 3803              add SP,3
+ 002D                   .dbline 20
+ 002D           ; }
+ 002D           ; 
+ 002D           ; //initialize cyrf chip
+ 002D           ; BOOL CYRF_Init(void )
+ 002D           ; {
+ 002D                   .dbline 22
+ 002D           ;       BYTE i;
+ 002D           ;       RST_Start();
+ 002D 10                push X
+ 002E 7C0000            xcall _RST_Start
+ 0031                   .dbline 23
+ 0031           ;       CS_PIN_Start();
+ 0031 7C0000            xcall _CS_PIN_Start
+ 0034                   .dbline 24
+ 0034           ;       SPIM_1_Start(SPIM_1_SPIM_MODE_0 | SPIM_1_SPIM_MSB_FIRST);
+ 0034 5000              mov A,0
+ 0036 7C0000            xcall _SPIM_1_Start
+ 0039 20                pop X
+ 003A                   .dbline 25
+ 003A           ;       CYRF_Reset();
+ 003A 9056              xcall _CYRF_Reset
+ 003C                   .dbline 26
+ 003C           ;     i = 100;
+ 003C 560064            mov [X+0],100
+ 003F                   .dbline 27
+ 003F           ;     CYRF_WriteRegister(CYRF_XACT_CFG, (CYRF_ACK_TO_12x));
+ 003F 5002              mov A,2
+ 0041 08                push A
+ 0042 500F              mov A,15
+ 0044 08                push A
+ 0045 9069              xcall _CYRF_WriteRegister
+ 0047 38FE              add SP,-2
+ 0049                   .dbline 28
+ 0049           ;     Delay50uTimes(10);
+ 0049 10                push X
+ 004A 500A              mov A,10
+ 004C 7C0000            xcall _Delay50uTimes
+ 004F 20                pop X
+ 0050           L7:
+ 0050                   .dbline 29
+ 0050           ;     do {
+ 0050                   .dbline 30
+ 0050           ;         Delay50uTimes(2);
+ 0050 10                push X
+ 0051 5002              mov A,2
+ 0053 7C0000            xcall _Delay50uTimes
+ 0056 20                pop X
+ 0057                   .dbline 31
+ 0057           ;         i--;
+ 0057 7B00              dec [X+0]
+ 0059                   .dbline 32
+ 0059           ;     }while (CYRF_ReadRegister(CYRF_XACT_CFG) != (CYRF_ACK_TO_12x));
+ 0059           L8:
+ 0059                   .dbline 32
+ 0059 500F              mov A,15
+ 005B 08                push A
+ 005C 91E5              xcall _CYRF_ReadRegister
+ 005E 38FF              add SP,-1
+ 0060 3902              cmp A,2
+ 0062 BFED              jnz L7
+ 0064                   .dbline 33
+ 0064           ;       M8C_EnableIntMask(INT_MSK0,INT_MSK0_GPIO); 
+ 0064 43E020            or REG[0xe0],32
+ 0067                   .dbline 34
+ 0067           ;       CY_irq=FALSE;;
+ 0067 62D000            mov REG[0xd0],>_CY_irq
+ 006A 550000            mov [_CY_irq],0
+ 006D                   .dbline 34
+ 006D                   .dbline 35
+ 006D           ;       return (CYRF_ReadRegister(CYRF_XACT_CFG)==(CYRF_ACK_TO_12x));
+ 006D 500F              mov A,15
+ 006F 08                push A
+ 0070 91D1              xcall _CYRF_ReadRegister
+ 0072 38FF              add SP,-1
+ 0074 62D000            mov REG[0xd0],>__r0
+ 0077 3902              cmp A,2
+ 0079 B009              jnz L11
+ 007B 560201            mov [X+2],1
+ 007E 560100            mov [X+1],0
+ 0081 8007              xjmp L12
+ 0083           L11:
+ 0083 560200            mov [X+2],0
+ 0086 560100            mov [X+1],0
+ 0089           L12:
+ 0089 62D000            mov REG[0xd0],>__r0
+ 008C 5202              mov A,[X+2]
+ 008E                   .dbline -2
+ 008E           L6:
+ 008E 38FD              add SP,-3
+ 0090 20                pop X
+ 0091                   .dbline 0 ; func end
+ 0091 7F                ret
+ 0092                   .dbsym l i 0 c
+ 0092                   .dbend
+ 0092                   .dbfunc e CYRF_Reset _CYRF_Reset fV
+ 0092           _CYRF_Reset::
+ 0092                   .dbline -1
+ 0092                   .dbline 40
+ 0092           ; }
+ 0092           ; 
+ 0092           ; //reset cyrf chip
+ 0092           ; void CYRF_Reset(void)
+ 0092           ; {
+ 0092                   .dbline 41
+ 0092           ;     RS_HI();
+ 0092 10                push X
+ 0093 7C0000            xcall _RST_On
+ 0096                   .dbline 42
+ 0096           ;       CS_HI();
+ 0096 7C0000            xcall _CS_PIN_On
+ 0099 20                pop X
+ 009A                   .dbline 43
+ 009A           ;     Timer_Wait_ms(10);
+ 009A 500A              mov A,10
+ 009C 08                push A
+ 009D 7C0000            xcall _Timer_Wait_ms
+ 00A0 38FF              add SP,-1
+ 00A2                   .dbline 44
+ 00A2           ;     RS_LO();
+ 00A2 10                push X
+ 00A3 7C0000            xcall _RST_Off
+ 00A6 20                pop X
+ 00A7                   .dbline 45
+ 00A7           ;     Timer_Wait_ms(100);
+ 00A7 5064              mov A,100
+ 00A9 08                push A
+ 00AA 7C0000            xcall _Timer_Wait_ms
+ 00AD 38FF              add SP,-1
+ 00AF                   .dbline -2
+ 00AF           L13:
+ 00AF                   .dbline 0 ; func end
+ 00AF 7F                ret
+ 00B0                   .dbend
+ 00B0                   .dbfunc e CYRF_WriteRegister _CYRF_WriteRegister fV
+ 00B0           ;            val -> X-5
+ 00B0           ;            reg -> X-4
+ 00B0           _CYRF_WriteRegister::
+ 00B0                   .dbline -1
+ 00B0 10                push X
+ 00B1 4F                mov X,SP
+ 00B2                   .dbline 50
+ 00B2           ; }
+ 00B2           ; 
+ 00B2           ; //write a singel register
+ 00B2           ; void CYRF_WriteRegister(BYTE reg, BYTE val)
+ 00B2           ; {
+ 00B2                   .dbline 51
+ 00B2           ;     CS_LO();
+ 00B2 10                push X
+ 00B3 7C0000            xcall _CS_PIN_Off
+ 00B6 20                pop X
+ 00B7                   .dbline 53
+ 00B7           ;       //write address
+ 00B7           ;       SPIM_1_SendTxData(CYRF_WRITE_BIT | reg);
+ 00B7 62D000            mov REG[0xd0],>__r0
+ 00BA 52FC              mov A,[X-4]
+ 00BC 2980              or A,-128
+ 00BE 10                push X
+ 00BF 7C0000            xcall _SPIM_1_SendTxData
+ 00C2 20                pop X
+ 00C3           L15:
+ 00C3                   .dbline 55
+ 00C3           ;       //wait for buffer empty
+ 00C3           ;       while( ! (SPIM_1_bReadStatus() & SPIM_1_SPIM_TX_BUFFER_EMPTY ) );
+ 00C3           L16:
+ 00C3                   .dbline 55
+ 00C3 10                push X
+ 00C4 7C0000            xcall _SPIM_1_bReadStatus
+ 00C7 20                pop X
+ 00C8 62D000            mov REG[0xd0],>__r0
+ 00CB 5300              mov [__r0],A
+ 00CD 470010            tst [__r0],16
+ 00D0 AFF2              jz L15
+ 00D2                   .dbline 57
+ 00D2           ;     //write data
+ 00D2           ;       SPIM_1_SendTxData(val);
+ 00D2 10                push X
+ 00D3 52FB              mov A,[X-5]
+ 00D5 7C0000            xcall _SPIM_1_SendTxData
+ 00D8 20                pop X
+ 00D9           L18:
+ 00D9                   .dbline 59
+ 00D9           ;       //wait til done
+ 00D9           ;       while( ! (SPIM_1_bReadStatus() & SPIM_1_SPIM_SPI_COMPLETE ) );
+ 00D9           L19:
+ 00D9                   .dbline 59
+ 00D9 10                push X
+ 00DA 7C0000            xcall _SPIM_1_bReadStatus
+ 00DD 20                pop X
+ 00DE 62D000            mov REG[0xd0],>__r0
+ 00E1 5300              mov [__r0],A
+ 00E3 470020            tst [__r0],32
+ 00E6 AFF2              jz L18
+ 00E8                   .dbline 60
+ 00E8           ;       CS_HI();
+ 00E8 10                push X
+ 00E9 7C0000            xcall _CS_PIN_On
+ 00EC 20                pop X
+ 00ED                   .dbline -2
+ 00ED           L14:
+ 00ED 20                pop X
+ 00EE                   .dbline 0 ; func end
+ 00EE 7F                ret
+ 00EF                   .dbsym l val -5 c
+ 00EF                   .dbsym l reg -4 c
+ 00EF                   .dbend
+ 00EF                   .dbfunc e CYRF_WriteDoubleRegister _CYRF_WriteDoubleRegister fV
+ 00EF           ;            val -> X-6
+ 00EF           ;            reg -> X-4
+ 00EF           _CYRF_WriteDoubleRegister::
+ 00EF                   .dbline -1
+ 00EF 10                push X
+ 00F0 4F                mov X,SP
+ 00F1 3802              add SP,2
+ 00F3                   .dbline 63
+ 00F3           ; }
+ 00F3           ; void CYRF_WriteDoubleRegister(BYTE reg, WORD val)
+ 00F3           ; {
+ 00F3                   .dbline 64
+ 00F3           ;     CS_LO();
+ 00F3 10                push X
+ 00F4 7C0000            xcall _CS_PIN_Off
+ 00F7 20                pop X
+ 00F8                   .dbline 66
+ 00F8           ;       //write address
+ 00F8           ;       SPIM_1_SendTxData(CYRF_WRITE_BIT |CYRF_INCR_BIT| reg);
+ 00F8 62D000            mov REG[0xd0],>__r0
+ 00FB 52FC              mov A,[X-4]
+ 00FD 29C0              or A,-64
+ 00FF 10                push X
+ 0100 7C0000            xcall _SPIM_1_SendTxData
+ 0103 20                pop X
+ 0104           L22:
+ 0104                   .dbline 68
+ 0104           ;       //wait for buffer empty
+ 0104           ;       while( ! (SPIM_1_bReadStatus() & SPIM_1_SPIM_TX_BUFFER_EMPTY ) );
+ 0104           L23:
+ 0104                   .dbline 68
+ 0104 10                push X
+ 0105 7C0000            xcall _SPIM_1_bReadStatus
+ 0108 20                pop X
+ 0109 62D000            mov REG[0xd0],>__r0
+ 010C 5300              mov [__r0],A
+ 010E 470010            tst [__r0],16
+ 0111 AFF2              jz L22
+ 0113                   .dbline 70
+ 0113           ;     //write data
+ 0113           ;       SPIM_1_SendTxData(val&& 0xff);
+ 0113 3DFA00            cmp [X-6],0
+ 0116 B006              jnz X0
+ 0118 3DFB00            cmp [X-5],0
+ 011B A009              jz L26
+ 011D           X0:
+ 011D 560101            mov [X+1],1
+ 0120 560000            mov [X+0],0
+ 0123 8007              xjmp L27
+ 0125           L26:
+ 0125 560100            mov [X+1],0
+ 0128 560000            mov [X+0],0
+ 012B           L27:
+ 012B 62D000            mov REG[0xd0],>__r0
+ 012E 5201              mov A,[X+1]
+ 0130 10                push X
+ 0131 7C0000            xcall _SPIM_1_SendTxData
+ 0134 20                pop X
+ 0135           L28:
+ 0135                   .dbline 72
+ 0135           ;       //wait for buffer empty
+ 0135           ;       while( ! (SPIM_1_bReadStatus() & SPIM_1_SPIM_TX_BUFFER_EMPTY ) );
+ 0135           L29:
+ 0135                   .dbline 72
+ 0135 10                push X
+ 0136 7C0000            xcall _SPIM_1_bReadStatus
+ 0139 20                pop X
+ 013A 62D000            mov REG[0xd0],>__r0
+ 013D 5300              mov [__r0],A
+ 013F 470010            tst [__r0],16
+ 0142 AFF2              jz L28
+ 0144                   .dbline 74
+ 0144           ;     //write data
+ 0144           ;       SPIM_1_SendTxData(val>>8);
+ 0144 52FA              mov A,[X-6]
+ 0146 10                push X
+ 0147 7C0000            xcall _SPIM_1_SendTxData
+ 014A 20                pop X
+ 014B           L31:
+ 014B                   .dbline 76
+ 014B           ;       //wait til done
+ 014B           ;       while( ! (SPIM_1_bReadStatus() & SPIM_1_SPIM_SPI_COMPLETE ) );
+ 014B           L32:
+ 014B                   .dbline 76
+ 014B 10                push X
+ 014C 7C0000            xcall _SPIM_1_bReadStatus
+ 014F 20                pop X
+ 0150 62D000            mov REG[0xd0],>__r0
+ 0153 5300              mov [__r0],A
+ 0155 470020            tst [__r0],32
+ 0158 AFF2              jz L31
+ 015A                   .dbline 77
+ 015A           ;       CS_HI();
+ 015A 10                push X
+ 015B 7C0000            xcall _CS_PIN_On
+ 015E 20                pop X
+ 015F                   .dbline -2
+ 015F           L21:
+ 015F 38FE              add SP,-2
+ 0161 20                pop X
+ 0162                   .dbline 0 ; func end
+ 0162 7F                ret
+ 0163                   .dbsym l val -6 i
+ 0163                   .dbsym l reg -4 c
+ 0163                   .dbend
+ 0163                   .dbfunc e CYRF_WriteRegisterMulti _CYRF_WriteRegisterMulti fV
+ 0163           ;              n -> X+0
+ 0163           ;            cnt -> X-7
+ 0163           ;           data -> X-6
+ 0163           ;            reg -> X-4
+ 0163           _CYRF_WriteRegisterMulti::
+ 0163                   .dbline -1
+ 0163 10                push X
+ 0164 4F                mov X,SP
+ 0165 3801              add SP,1
+ 0167                   .dbline 83
+ 0167           ; }
+ 0167           ; 
+ 0167           ; 
+ 0167           ; //write a single register cnt times
+ 0167           ; void CYRF_WriteRegisterMulti(BYTE reg,BYTE const data[] , BYTE cnt)
+ 0167           ; {
+ 0167                   .dbline 85
+ 0167           ;       BYTE n;
+ 0167           ;     CS_LO();
+ 0167 10                push X
+ 0168 7C0000            xcall _CS_PIN_Off
+ 016B 20                pop X
+ 016C                   .dbline 87
+ 016C           ;       //write address
+ 016C           ;       SPIM_1_SendTxData(CYRF_WRITE_BIT|reg);
+ 016C 62D000            mov REG[0xd0],>__r0
+ 016F 52FC              mov A,[X-4]
+ 0171 2980              or A,-128
+ 0173 10                push X
+ 0174 7C0000            xcall _SPIM_1_SendTxData
+ 0177 20                pop X
+ 0178                   .dbline 88
+ 0178           ;     for(n = 0; n < cnt; n++)
+ 0178 560000            mov [X+0],0
+ 017B 802D              xjmp L38
+ 017D           L39:
+ 017D                   .dbline 91
+ 017D           ;     {
+ 017D           ;               //wait for buffer empty
+ 017D           ;               while( ! (SPIM_1_bReadStatus() & SPIM_1_SPIM_TX_BUFFER_EMPTY ) );
+ 017D           L40:
+ 017D                   .dbline 91
+ 017D 10                push X
+ 017E 7C0000            xcall _SPIM_1_bReadStatus
+ 0181 20                pop X
+ 0182 62D000            mov REG[0xd0],>__r0
+ 0185 5300              mov [__r0],A
+ 0187 470010            tst [__r0],16
+ 018A AFF2              jz L39
+ 018C                   .dbline 93
+ 018C           ;           //write data
+ 018C           ;               SPIM_1_SendTxData(data[n]);
+ 018C 5200              mov A,[X+0]
+ 018E 5300              mov [__r1],A
+ 0190 550000            mov [__r0],0
+ 0193 52FB              mov A,[X-5]
+ 0195 0400              add [__r1],A
+ 0197 52FA              mov A,[X-6]
+ 0199 0C00              adc [__r0],A
+ 019B 5100              mov A,[__r0]
+ 019D 10                push X
+ 019E 5800              mov X,[__r1]
+ 01A0 28                romx
+ 01A1 20                pop X
+ 01A2 10                push X
+ 01A3 7C0000            xcall _SPIM_1_SendTxData
+ 01A6 20                pop X
+ 01A7                   .dbline 94
+ 01A7           ;     }
+ 01A7           L36:
+ 01A7                   .dbline 88
+ 01A7 7700              inc [X+0]
+ 01A9           L38:
+ 01A9                   .dbline 88
+ 01A9 5200              mov A,[X+0]
+ 01AB 3BF9              cmp A,[X-7]
+ 01AD CFCF              jc L40
+ 01AF           X1:
+ 01AF           L42:
+ 01AF                   .dbline 95
+ 01AF           ;       while( ! (SPIM_1_bReadStatus() & SPIM_1_SPIM_SPI_COMPLETE ) );
+ 01AF           L43:
+ 01AF                   .dbline 95
+ 01AF 10                push X
+ 01B0 7C0000            xcall _SPIM_1_bReadStatus
+ 01B3 20                pop X
+ 01B4 62D000            mov REG[0xd0],>__r0
+ 01B7 5300              mov [__r0],A
+ 01B9 470020            tst [__r0],32
+ 01BC AFF2              jz L42
+ 01BE                   .dbline 96
+ 01BE           ;       CS_HI();
+ 01BE 10                push X
+ 01BF 7C0000            xcall _CS_PIN_On
+ 01C2 20                pop X
+ 01C3                   .dbline -2
+ 01C3           L34:
+ 01C3 38FF              add SP,-1
+ 01C5 20                pop X
+ 01C6                   .dbline 0 ; func end
+ 01C6 7F                ret
+ 01C7                   .dbsym l n 0 c
+ 01C7                   .dbsym l cnt -7 c
+ 01C7                   .dbsym l data -6 pkc
+ 01C7                   .dbsym l reg -4 c
+ 01C7                   .dbend
+ 01C7                   .dbfunc e CYRF_WriteRegisterMultiD _CYRF_WriteRegisterMultiD fV
+ 01C7           ;              n -> X+0
+ 01C7           ;            cnt -> X-7
+ 01C7           ;           data -> X-6
+ 01C7           ;            reg -> X-4
+ 01C7           _CYRF_WriteRegisterMultiD::
+ 01C7                   .dbline -1
+ 01C7 10                push X
+ 01C8 4F                mov X,SP
+ 01C9 3801              add SP,1
+ 01CB                   .dbline 99
+ 01CB           ; }
+ 01CB           ; void CYRF_WriteRegisterMultiD(BYTE reg, BYTE data[], BYTE cnt)
+ 01CB           ; {
+ 01CB                   .dbline 101
+ 01CB           ;       BYTE n;
+ 01CB           ;     CS_LO();
+ 01CB 10                push X
+ 01CC 7C0000            xcall _CS_PIN_Off
+ 01CF 20                pop X
+ 01D0                   .dbline 103
+ 01D0           ;       //write address
+ 01D0           ;       SPIM_1_SendTxData(CYRF_WRITE_BIT|reg);
+ 01D0 62D000            mov REG[0xd0],>__r0
+ 01D3 52FC              mov A,[X-4]
+ 01D5 2980              or A,-128
+ 01D7 10                push X
+ 01D8 7C0000            xcall _SPIM_1_SendTxData
+ 01DB 20                pop X
+ 01DC                   .dbline 104
+ 01DC           ;     for(n = 0; n < cnt; n++)
+ 01DC 560000            mov [X+0],0
+ 01DF 802C              xjmp L49
+ 01E1           L50:
+ 01E1                   .dbline 107
+ 01E1           ;     {
+ 01E1           ;               //wait for buffer empty
+ 01E1           ;               while( ! (SPIM_1_bReadStatus() & SPIM_1_SPIM_TX_BUFFER_EMPTY ) );
+ 01E1           L51:
+ 01E1                   .dbline 107
+ 01E1 10                push X
+ 01E2 7C0000            xcall _SPIM_1_bReadStatus
+ 01E5 20                pop X
+ 01E6 62D000            mov REG[0xd0],>__r0
+ 01E9 5300              mov [__r0],A
+ 01EB 470010            tst [__r0],16
+ 01EE AFF2              jz L50
+ 01F0                   .dbline 109
+ 01F0           ;           //write data
+ 01F0           ;               SPIM_1_SendTxData(data[n]);
+ 01F0 5200              mov A,[X+0]
+ 01F2 5300              mov [__r1],A
+ 01F4 550000            mov [__r0],0
+ 01F7 52FB              mov A,[X-5]
+ 01F9 0400              add [__r1],A
+ 01FB 52FA              mov A,[X-6]
+ 01FD 0C00              adc [__r0],A
+ 01FF 5100              mov A,[__r0]
+ 0201 60D4              mov REG[0xd4],A
+ 0203 3E00              mvi A,[__r1]
+ 0205 10                push X
+ 0206 7C0000            xcall _SPIM_1_SendTxData
+ 0209 20                pop X
+ 020A                   .dbline 110
+ 020A           ;     }
+ 020A           L47:
+ 020A                   .dbline 104
+ 020A 7700              inc [X+0]
+ 020C           L49:
+ 020C                   .dbline 104
+ 020C 5200              mov A,[X+0]
+ 020E 3BF9              cmp A,[X-7]
+ 0210 CFD0              jc L51
+ 0212           X2:
+ 0212           L53:
+ 0212                   .dbline 111
+ 0212           ;       while( ! (SPIM_1_bReadStatus() & SPIM_1_SPIM_SPI_COMPLETE ) );
+ 0212           L54:
+ 0212                   .dbline 111
+ 0212 10                push X
+ 0213 7C0000            xcall _SPIM_1_bReadStatus
+ 0216 20                pop X
+ 0217 62D000            mov REG[0xd0],>__r0
+ 021A 5300              mov [__r0],A
+ 021C 470020            tst [__r0],32
+ 021F AFF2              jz L53
+ 0221                   .dbline 112
+ 0221           ;       CS_HI();
+ 0221 10                push X
+ 0222 7C0000            xcall _CS_PIN_On
+ 0225 20                pop X
+ 0226                   .dbline -2
+ 0226           L45:
+ 0226 38FF              add SP,-1
+ 0228 20                pop X
+ 0229                   .dbline 0 ; func end
+ 0229 7F                ret
+ 022A                   .dbsym l n 0 c
+ 022A                   .dbsym l cnt -7 c
+ 022A                   .dbsym l data -6 pc
+ 022A                   .dbsym l reg -4 c
+ 022A                   .dbend
+ 022A                   .dbfunc e CYRF_WriteRegisterInc _CYRF_WriteRegisterInc fV
+ 022A           ;            cnt -> X-7
+ 022A           ;           data -> X-6
+ 022A           ;            reg -> X-4
+ 022A           _CYRF_WriteRegisterInc::
+ 022A                   .dbline -1
+ 022A 10                push X
+ 022B 4F                mov X,SP
+ 022C                   .dbline 117
+ 022C           ; }
+ 022C           ; 
+ 022C           ; 
+ 022C           ; void CYRF_WriteRegisterInc(BYTE reg,BYTE  data[] , BYTE cnt)
+ 022C           ; {
+ 022C                   .dbline 118
+ 022C           ; CYRF_WriteRegisterMultiD(CYRF_INCR_BIT| reg,data,cnt);
+ 022C 52F9              mov A,[X-7]
+ 022E 08                push A
+ 022F 52FA              mov A,[X-6]
+ 0231 08                push A
+ 0232 52FB              mov A,[X-5]
+ 0234 08                push A
+ 0235 62D000            mov REG[0xd0],>__r0
+ 0238 52FC              mov A,[X-4]
+ 023A 2940              or A,64
+ 023C 08                push A
+ 023D 9F88              xcall _CYRF_WriteRegisterMultiD
+ 023F 38FC              add SP,-4
+ 0241                   .dbline -2
+ 0241           L56:
+ 0241 20                pop X
+ 0242                   .dbline 0 ; func end
+ 0242 7F                ret
+ 0243                   .dbsym l cnt -7 c
+ 0243                   .dbsym l data -6 pc
+ 0243                   .dbsym l reg -4 c
+ 0243                   .dbend
+ 0243                   .dbfunc e CYRF_ReadRegister _CYRF_ReadRegister fc
+ 0243           ;           data -> X+0
+ 0243           ;            reg -> X-4
+ 0243           _CYRF_ReadRegister::
+ 0243                   .dbline -1
+ 0243 10                push X
+ 0244 4F                mov X,SP
+ 0245 3801              add SP,1
+ 0247                   .dbline 123
+ 0247           ; }
+ 0247           ; 
+ 0247           ; //read a singele register 
+ 0247           ; BYTE CYRF_ReadRegister(BYTE reg)
+ 0247           ; {
+ 0247                   .dbline 125
+ 0247           ; BYTE data;
+ 0247           ;     CS_LO();
+ 0247 10                push X
+ 0248 7C0000            xcall _CS_PIN_Off
+ 024B 20                pop X
+ 024C                   .dbline 126
+ 024C           ;     SPIM_1_SendTxData(reg);
+ 024C 10                push X
+ 024D 52FC              mov A,[X-4]
+ 024F 7C0000            xcall _SPIM_1_SendTxData
+ 0252 20                pop X
+ 0253           L58:
+ 0253                   .dbline 128
+ 0253           ;       //wait for tx buffer empty
+ 0253           ;       while( ! (SPIM_1_bReadStatus() & SPIM_1_SPIM_TX_BUFFER_EMPTY ) );
+ 0253           L59:
+ 0253                   .dbline 128
+ 0253 10                push X
+ 0254 7C0000            xcall _SPIM_1_bReadStatus
+ 0257 20                pop X
+ 0258 62D000            mov REG[0xd0],>__r0
+ 025B 5300              mov [__r0],A
+ 025D 470010            tst [__r0],16
+ 0260 AFF2              jz L58
+ 0262                   .dbline 130
+ 0262           ;       //dummy write
+ 0262           ;       SPIM_1_SendTxData(0x00);
+ 0262 10                push X
+ 0263 5000              mov A,0
+ 0265 7C0000            xcall _SPIM_1_SendTxData
+ 0268 20                pop X
+ 0269           L61:
+ 0269                   .dbline 132
+ 0269           ;       //wait for gabage byte read
+ 0269           ;       while( ! (SPIM_1_bReadStatus() & SPIM_1_SPIM_RX_BUFFER_FULL ) );
+ 0269           L62:
+ 0269                   .dbline 132
+ 0269 10                push X
+ 026A 7C0000            xcall _SPIM_1_bReadStatus
+ 026D 20                pop X
+ 026E 62D000            mov REG[0xd0],>__r0
+ 0271 5300              mov [__r0],A
+ 0273 470008            tst [__r0],8
+ 0276 AFF2              jz L61
+ 0278                   .dbline 133
+ 0278           ;       SPIM_1_bReadRxData();
+ 0278 10                push X
+ 0279 7C0000            xcall _SPIM_1_bReadRxData
+ 027C 20                pop X
+ 027D 62D000            mov REG[0xd0],>__r0
+ 0280           L64:
+ 0280                   .dbline 135
+ 0280           ;       //wait for final byte
+ 0280           ;       while( ! (SPIM_1_bReadStatus() & (SPIM_1_SPIM_RX_BUFFER_FULL|SPIM_1_SPIM_SPI_COMPLETE) ) );
+ 0280           L65:
+ 0280                   .dbline 135
+ 0280 10                push X
+ 0281 7C0000            xcall _SPIM_1_bReadStatus
+ 0284 20                pop X
+ 0285 62D000            mov REG[0xd0],>__r0
+ 0288 5300              mov [__r0],A
+ 028A 470028            tst [__r0],40
+ 028D AFF2              jz L64
+ 028F                   .dbline 136
+ 028F           ;       data=SPIM_1_bReadRxData();
+ 028F 10                push X
+ 0290 7C0000            xcall _SPIM_1_bReadRxData
+ 0293 20                pop X
+ 0294 62D000            mov REG[0xd0],>__r0
+ 0297 5400              mov [X+0],A
+ 0299                   .dbline 137
+ 0299           ;     CS_HI();
+ 0299 10                push X
+ 029A 7C0000            xcall _CS_PIN_On
+ 029D 20                pop X
+ 029E                   .dbline 138
+ 029E           ;       return data;
+ 029E 5200              mov A,[X+0]
+ 02A0 62D000            mov REG[0xd0],>__r0
+ 02A3                   .dbline -2
+ 02A3           L57:
+ 02A3 38FF              add SP,-1
+ 02A5 20                pop X
+ 02A6                   .dbline 0 ; func end
+ 02A6 7F                ret
+ 02A7                   .dbsym l data 0 c
+ 02A7                   .dbsym l reg -4 c
+ 02A7                   .dbend
+ 02A7                   .dbfunc e CYRF_ReadRegisterMulti _CYRF_ReadRegisterMulti fV
+ 02A7           ;              n -> X+1
+ 02A7           ;         status -> X+0
+ 02A7           ;            cnt -> X-7
+ 02A7           ;           data -> X-6
+ 02A7           ;            reg -> X-4
+ 02A7           _CYRF_ReadRegisterMulti::
+ 02A7                   .dbline -1
+ 02A7 10                push X
+ 02A8 4F                mov X,SP
+ 02A9 3802              add SP,2
+ 02AB                   .dbline 143
+ 02AB           ; }
+ 02AB           ; 
+ 02AB           ; //read a singel register cnt times
+ 02AB           ; void CYRF_ReadRegisterMulti(BYTE reg, BYTE data[], BYTE cnt)
+ 02AB           ; {
+ 02AB                   .dbline 146
+ 02AB           ;       BYTE n;
+ 02AB           ;       BYTE status;
+ 02AB           ;     CS_LO();
+ 02AB 10                push X
+ 02AC 7C0000            xcall _CS_PIN_Off
+ 02AF 20                pop X
+ 02B0                   .dbline 147
+ 02B0           ;       cnt--;
+ 02B0 7BF9              dec [X-7]
+ 02B2                   .dbline 149
+ 02B2           ;       //write address
+ 02B2           ;       SPIM_1_SendTxData(reg);
+ 02B2 10                push X
+ 02B3 52FC              mov A,[X-4]
+ 02B5 7C0000            xcall _SPIM_1_SendTxData
+ 02B8 20                pop X
+ 02B9           L68:
+ 02B9                   .dbline 151
+ 02B9           ;       //wait for buffer empty
+ 02B9           ;       while( ! (status=SPIM_1_bReadStatus() & SPIM_1_SPIM_TX_BUFFER_EMPTY ) );
+ 02B9           L69:
+ 02B9                   .dbline 151
+ 02B9 10                push X
+ 02BA 7C0000            xcall _SPIM_1_bReadStatus
+ 02BD 20                pop X
+ 02BE 62D000            mov REG[0xd0],>__r0
+ 02C1 5300              mov [__r0],A
+ 02C3 260010            and [__r0],16
+ 02C6 5100              mov A,[__r0]
+ 02C8 5400              mov [X+0],A
+ 02CA 3C0000            cmp [__r0],0
+ 02CD AFEB              jz L68
+ 02CF                   .dbline 153
+ 02CF           ;     //dummy write
+ 02CF           ;       SPIM_1_SendTxData(0x00);
+ 02CF 10                push X
+ 02D0 5000              mov A,0
+ 02D2 7C0000            xcall _SPIM_1_SendTxData
+ 02D5 20                pop X
+ 02D6           L71:
+ 02D6                   .dbline 155
+ 02D6           ;       //wait for gabage byte read
+ 02D6           ;       while( ! (status=SPIM_1_bReadStatus() & SPIM_1_SPIM_RX_BUFFER_FULL ) );
+ 02D6           L72:
+ 02D6                   .dbline 155
+ 02D6 10                push X
+ 02D7 7C0000            xcall _SPIM_1_bReadStatus
+ 02DA 20                pop X
+ 02DB 62D000            mov REG[0xd0],>__r0
+ 02DE 5300              mov [__r0],A
+ 02E0 260008            and [__r0],8
+ 02E3 5100              mov A,[__r0]
+ 02E5 5400              mov [X+0],A
+ 02E7 3C0000            cmp [__r0],0
+ 02EA AFEB              jz L71
+ 02EC                   .dbline 156
+ 02EC           ;       SPIM_1_bReadRxData();
+ 02EC 10                push X
+ 02ED 7C0000            xcall _SPIM_1_bReadRxData
+ 02F0 20                pop X
+ 02F1 62D000            mov REG[0xd0],>__r0
+ 02F4                   .dbline 159
+ 02F4           ;       
+ 02F4           ;     
+ 02F4           ;     for(n=0;(n<cnt);)
+ 02F4 560100            mov [X+1],0
+ 02F7 803F              xjmp L77
+ 02F9           L74:
+ 02F9                   .dbline 160
+ 02F9           ;       {
+ 02F9                   .dbline 162
+ 02F9           ;               //if buffer empty
+ 02F9           ;               status=SPIM_1_bReadStatus();
+ 02F9 10                push X
+ 02FA 7C0000            xcall _SPIM_1_bReadStatus
+ 02FD 20                pop X
+ 02FE 62D000            mov REG[0xd0],>__r0
+ 0301 5400              mov [X+0],A
+ 0303                   .dbline 163
+ 0303           ;               if(  (status & SPIM_1_SPIM_TX_BUFFER_EMPTY ) );
+ 0303 480010            tst [X+0],16
+ 0306 A001              jz L78
+ 0308                   .dbline 163
+ 0308           L78:
+ 0308                   .dbline 164
+ 0308           ;                       {
+ 0308                   .dbline 166
+ 0308           ;                   //dummy write
+ 0308           ;                       SPIM_1_SendTxData(0x00);
+ 0308 10                push X
+ 0309 5000              mov A,0
+ 030B 7C0000            xcall _SPIM_1_SendTxData
+ 030E 20                pop X
+ 030F                   .dbline 167
+ 030F           ;                       }
+ 030F                   .dbline 169
+ 030F           ;               //if data               
+ 030F           ;               if(  (status & SPIM_1_SPIM_RX_BUFFER_FULL ) );
+ 030F 480008            tst [X+0],8
+ 0312 A001              jz L80
+ 0314                   .dbline 169
+ 0314           L80:
+ 0314                   .dbline 170
+ 0314           ;               {
+ 0314                   .dbline 171
+ 0314           ;                       data[n]=SPIM_1_bReadRxData();
+ 0314 10                push X
+ 0315 7C0000            xcall _SPIM_1_bReadRxData
+ 0318 20                pop X
+ 0319 62D000            mov REG[0xd0],>__r0
+ 031C 5300              mov [__r0],A
+ 031E 5201              mov A,[X+1]
+ 0320 5300              mov [__r3],A
+ 0322 550000            mov [__r2],0
+ 0325 52FB              mov A,[X-5]
+ 0327 0400              add [__r3],A
+ 0329 52FA              mov A,[X-6]
+ 032B 0C00              adc [__r2],A
+ 032D 5100              mov A,[__r2]
+ 032F 60D5              mov REG[0xd5],A
+ 0331 5100              mov A,[__r0]
+ 0333 3F00              mvi [__r3],A
+ 0335                   .dbline 172
+ 0335           ;                       n++;
+ 0335 7701              inc [X+1]
+ 0337                   .dbline 173
+ 0337           ;               }
+ 0337                   .dbline 174
+ 0337           ;     };
+ 0337           L75:
+ 0337                   .dbline 159
+ 0337           L77:
+ 0337                   .dbline 159
+ 0337 5201              mov A,[X+1]
+ 0339 3BF9              cmp A,[X-7]
+ 033B CFBD              jc L74
+ 033D           X3:
+ 033D                   .dbline 174
+ 033D           L82:
+ 033D                   .dbline 176
+ 033D           ;       //wait for final byte
+ 033D           ;       while( ! (SPIM_1_bReadStatus() & (SPIM_1_SPIM_RX_BUFFER_FULL|SPIM_1_SPIM_SPI_COMPLETE) ) );
+ 033D           L83:
+ 033D                   .dbline 176
+ 033D 10                push X
+ 033E 7C0000            xcall _SPIM_1_bReadStatus
+ 0341 20                pop X
+ 0342 62D000            mov REG[0xd0],>__r0
+ 0345 5300              mov [__r0],A
+ 0347 470028            tst [__r0],40
+ 034A AFF2              jz L82
+ 034C                   .dbline 177
+ 034C           ;       data[cnt]=SPIM_1_bReadRxData();
+ 034C 10                push X
+ 034D 7C0000            xcall _SPIM_1_bReadRxData
+ 0350 20                pop X
+ 0351 62D000            mov REG[0xd0],>__r0
+ 0354 5300              mov [__r0],A
+ 0356 52F9              mov A,[X-7]
+ 0358 5300              mov [__r3],A
+ 035A 550000            mov [__r2],0
+ 035D 52FB              mov A,[X-5]
+ 035F 0400              add [__r3],A
+ 0361 52FA              mov A,[X-6]
+ 0363 0C00              adc [__r2],A
+ 0365 5100              mov A,[__r2]
+ 0367 60D5              mov REG[0xd5],A
+ 0369 5100              mov A,[__r0]
+ 036B 3F00              mvi [__r3],A
+ 036D                   .dbline 178
+ 036D           ;       CS_HI();
+ 036D 10                push X
+ 036E 7C0000            xcall _CS_PIN_On
+ 0371 20                pop X
+ 0372                   .dbline -2
+ 0372           L67:
+ 0372 38FE              add SP,-2
+ 0374 20                pop X
+ 0375                   .dbline 0 ; func end
+ 0375 7F                ret
+ 0376                   .dbsym l n 1 c
+ 0376                   .dbsym l status 0 c
+ 0376                   .dbsym l cnt -7 c
+ 0376                   .dbsym l data -6 pc
+ 0376                   .dbsym l reg -4 c
+ 0376                   .dbend
+ 0376                   .dbfunc e CYRF_ReadRegisterInc _CYRF_ReadRegisterInc fV
+ 0376           ;            cnt -> X-7
+ 0376           ;           data -> X-6
+ 0376           ;            reg -> X-4
+ 0376           _CYRF_ReadRegisterInc::
+ 0376                   .dbline -1
+ 0376 10                push X
+ 0377 4F                mov X,SP
+ 0378                   .dbline 181
+ 0378           ; }
+ 0378           ; void CYRF_ReadRegisterInc(BYTE reg, BYTE data[], BYTE cnt)
+ 0378           ; {
+ 0378                   .dbline 182
+ 0378           ;       CYRF_ReadRegisterMulti(reg|CYRF_INCR_BIT,data,cnt);
+ 0378 52F9              mov A,[X-7]
+ 037A 08                push A
+ 037B 52FA              mov A,[X-6]
+ 037D 08                push A
+ 037E 52FB              mov A,[X-5]
+ 0380 08                push A
+ 0381 62D000            mov REG[0xd0],>__r0
+ 0384 52FC              mov A,[X-4]
+ 0386 2940              or A,64
+ 0388 08                push A
+ 0389 9F1C              xcall _CYRF_ReadRegisterMulti
+ 038B 38FC              add SP,-4
+ 038D                   .dbline -2
+ 038D           L85:
+ 038D 20                pop X
+ 038E                   .dbline 0 ; func end
+ 038E 7F                ret
+ 038F                   .dbsym l cnt -7 c
+ 038F                   .dbsym l data -6 pc
+ 038F                   .dbsym l reg -4 c
+ 038F                   .dbend
+ 038F                   .dbfunc e CYRF_GetMfgData _CYRF_GetMfgData fV
+ 038F           ;           data -> X-5
+ 038F           _CYRF_GetMfgData::
+ 038F                   .dbline -1
+ 038F 10                push X
+ 0390 4F                mov X,SP
+ 0391                   .dbline 188
+ 0391           ; }
+ 0391           ; 
+ 0391           ; 
+ 0391           ; //get Mfg ID
+ 0391           ; void CYRF_GetMfgData(BYTE data[])
+ 0391           ; {
+ 0391                   .dbline 190
+ 0391           ;     /* Fuses power on */
+ 0391           ;     CYRF_WriteRegister(CYRF_MFG_ID, 0xFF);
+ 0391 50FF              mov A,-1
+ 0393 08                push A
+ 0394 5025              mov A,37
+ 0396 08                push A
+ 0397 9D17              xcall _CYRF_WriteRegister
+ 0399 38FE              add SP,-2
+ 039B                   .dbline 192
+ 039B           ; 
+ 039B           ;     CYRF_ReadRegisterMulti(CYRF_MFG_ID, data, 6);
+ 039B 5006              mov A,6
+ 039D 08                push A
+ 039E 52FB              mov A,[X-5]
+ 03A0 08                push A
+ 03A1 52FC              mov A,[X-4]
+ 03A3 08                push A
+ 03A4 5025              mov A,37
+ 03A6 08                push A
+ 03A7 9EFE              xcall _CYRF_ReadRegisterMulti
+ 03A9                   .dbline 195
+ 03A9           ; 
+ 03A9           ;     /* Fuses power off */
+ 03A9           ;     CYRF_WriteRegister(CYRF_MFG_ID, 0x00); 
+ 03A9 5000              mov A,0
+ 03AB 08                push A
+ 03AC 5025              mov A,37
+ 03AE 08                push A
+ 03AF 9CFF              xcall _CYRF_WriteRegister
+ 03B1 38FA              add SP,-6
+ 03B3                   .dbline -2
+ 03B3           L86:
+ 03B3 20                pop X
+ 03B4                   .dbline 0 ; func end
+ 03B4 7F                ret
+ 03B5                   .dbsym l data -5 pc
+ 03B5                   .dbend
+                        .area data(ram, con, rel)
+ 0000                   .dbfile C:\Users\Ralf\DOCUME~1\DSM_SA~1\DSM_SA~1\DSM_SA~1\cyrf6936.c
+ 0000           _CY_irq::
+ 0000 00                .byte 0
+ 0001                   .dbsym e CY_irq _CY_irq c

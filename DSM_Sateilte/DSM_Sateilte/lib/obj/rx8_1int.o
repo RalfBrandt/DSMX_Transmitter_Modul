@@ -1,0 +1,30 @@
+XH
+H 3 areas 2 global symbols
+M rx8_1int.asm
+S _RX8_1_Interrupt Ref0000
+A text size 0 flags 0
+dbfile lib/rx8_1int.asm
+dbfunc 0 ? 0 I
+dbfile RX8_1.inc
+dbfunc 0 ? 0 I
+dbfile f:/PROGRA~1/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C21~3/m8c.inc
+dbfunc 0 ? 0 I
+dbfile ./lib/RX8_1.inc
+dbfunc 0 ? 0 I
+dbfile lib/rx8_1int.asm
+dbfunc 0 ? 0 I
+dbfile memory.inc
+dbfunc 0 ? 0 I
+dbfile lib/rx8_1int.asm
+dbfunc 0 ? 0 I
+dbfile f:/PROGRA~1/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C21~3/m8c.inc
+dbfunc 0 ? 0 I
+A InterruptRAM size 0 flags 20
+A UserModules size 4 flags 0
+dbfile lib/rx8_1int.asm
+dbfunc 0 ? 0 I
+dbline 6B 0
+dbline D7 3
+S _RX8_1_ISR Def0000
+T 00 00 7D 00 00 7E
+R 00 00 00 02 02 03 00 00

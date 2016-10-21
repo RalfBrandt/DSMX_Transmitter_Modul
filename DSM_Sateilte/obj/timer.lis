@@ -1,0 +1,458 @@
+ 0000                   cpu LMM
+                        .module timer.c
+                        .area text(rom, con, rel)
+ 0000                   .dbfile ./timer.c
+                        .area data(ram, con, rel)
+ 0000                   .dbfile ./timer.c
+ 0000           _systic::
+ 0000 0000              .word 0
+ 0002                   .dbfile C:\Users\Ralf\DOCUME~1\DSM_SA~1\DSM_SA~1\DSM_SA~1\timer.c
+ 0002                   .dbsym e systic _systic i
+                        .area data(ram, con, rel)
+ 0000                   .dbfile C:\Users\Ralf\DOCUME~1\DSM_SA~1\DSM_SA~1\DSM_SA~1\timer.c
+                        .area data(ram, con, rel)
+ 0000                   .dbfile C:\Users\Ralf\DOCUME~1\DSM_SA~1\DSM_SA~1\DSM_SA~1\timer.c
+ 0000           _timer_cb::
+ 0000 0000              .word 0
+ 0002                   .dbsym e timer_cb _timer_cb pfV
+                        .area data(ram, con, rel)
+ 0000                   .dbfile C:\Users\Ralf\DOCUME~1\DSM_SA~1\DSM_SA~1\DSM_SA~1\timer.c
+                        .area text(rom, con, rel)
+ 0000                   .dbfile C:\Users\Ralf\DOCUME~1\DSM_SA~1\DSM_SA~1\DSM_SA~1\timer.c
+ 0000                   .dbfunc e Timer_Wait_ms _Timer_Wait_ms fV
+ 0000           ;             ms -> X-4
+ 0000           _Timer_Wait_ms::
+ 0000                   .dbline -1
+ 0000 10                push X
+ 0001 4F                mov X,SP
+ 0002                   .dbline 11
+ 0002           ; #include "PSoCAPI.h"    // PSoC API definitions for all User Modules
+ 0002           ; #include "timer.h"
+ 0002           ; #include "serial.h"
+ 0002           ; 
+ 0002           ; WORD systic=0;   //will be incremented once per 1,953125 ms
+ 0002           ; WORD cnt_last;
+ 0002           ; tmr_callback_t timer_cb=0;
+ 0002           ; 
+ 0002           ; //a delay
+ 0002           ; void Timer_Wait_ms(BYTE ms)
+ 0002           ; {
+ 0002                   .dbline 12
+ 0002           ; SleepTimer_1_TickWait(ms>>2);
+ 0002 52FC              mov A,[X-4]
+ 0004 62D000            mov REG[0xd0],>__r0
+ 0007 5300              mov [__r0],A
+ 0009 6800              asr [__r0]
+ 000B 6800              asr [__r0]
+ 000D 26003F            and [__r0],63
+ 0010 10                push X
+ 0011 5100              mov A,[__r0]
+ 0013 7C0000            xcall _SleepTimer_1_TickWait
+ 0016 20                pop X
+ 0017                   .dbline -2
+ 0017           L1:
+ 0017 20                pop X
+ 0018                   .dbline 0 ; func end
+ 0018 7F                ret
+ 0019                   .dbsym l ms -4 c
+ 0019                   .dbend
+ 0019                   .dbfunc e Timer_Enable _Timer_Enable fV
+ 0019           ;            val -> X-4
+ 0019           _Timer_Enable::
+ 0019                   .dbline -1
+ 0019 10                push X
+ 001A 4F                mov X,SP
+ 001B 3802              add SP,2
+ 001D                   .dbline 16
+ 001D           ; }
+ 001D           ; 
+ 001D           ; void Timer_Enable(BOOL val)
+ 001D           ; {
+ 001D                   .dbline 17
+ 001D           ; Counter16_1_INPUT_LSB_REG=val?0x16:0x6;
+ 001D 3DFC00            cmp [X-4],0
+ 0020 A009              jz L4
+ 0022 560116            mov [X+1],22
+ 0025 560000            mov [X+0],0
+ 0028 8007              xjmp L5
+ 002A           L4:
+ 002A 560106            mov [X+1],6
+ 002D 560000            mov [X+0],0
+ 0030           L5:
+ 0030 62D000            mov REG[0xd0],>__r0
+ 0033 5201              mov A,[X+1]
+ 0035 7110              or F,0x10  ; iopage = 1
+ 0037 6021              mov REG[0x21],A
+ 0039                   .dbline -2
+ 0039 70CF              and F,0xCF      ; iopage = 0
+ 003B           L2:
+ 003B 38FE              add SP,-2
+ 003D 20                pop X
+ 003E                   .dbline 0 ; func end
+ 003E 7F                ret
+ 003F                   .dbsym l val -4 c
+ 003F                   .dbend
+ 003F                   .dbfunc e Timer_init _Timer_init fV
+ 003F           _Timer_init::
+ 003F                   .dbline -1
+ 003F                   .dbline 21
+ 003F           ; }
+ 003F           ; 
+ 003F           ; void Timer_init (void)
+ 003F           ; {
+ 003F                   .dbline 22
+ 003F           ; timer_cb=0;
+ 003F 62D000            mov REG[0xd0],>_timer_cb
+ 0042 550100            mov [_timer_cb+1],<PL0
+ 0045 550000            mov [_timer_cb],>PL0
+ 0048                   .dbline 23
+ 0048           ; SleepTimer_1_EnableInt();
+ 0048 10                push X
+ 0049 7C0000            xcall _SleepTimer_1_EnableInt
+ 004C                   .dbline 24
+ 004C           ; SleepTimer_1_Start();
+ 004C 7C0000            xcall _SleepTimer_1_Start
+ 004F                   .dbline 25
+ 004F           ; Counter16_1_EnableInt();
+ 004F 7C0000            xcall _Counter16_1_EnableInt
+ 0052                   .dbline 26
+ 0052           ; Counter16_1_Start();
+ 0052 7C0000            xcall _Counter16_1_Start
+ 0055 20                pop X
+ 0056                   .dbline 27
+ 0056           ; Timer_Enable(TRUE);
+ 0056 5001              mov A,1
+ 0058 08                push A
+ 0059 9FBE              xcall _Timer_Enable
+ 005B 38FF              add SP,-1
+ 005D                   .dbline -2
+ 005D           L6:
+ 005D                   .dbline 0 ; func end
+ 005D 7F                ret
+ 005E                   .dbend
+ 005E                   .dbfunc e Timer_GetTime _Timer_GetTime fi
+ 005E           ;           time -> X+0
+ 005E           _Timer_GetTime::
+ 005E                   .dbline -1
+ 005E 10                push X
+ 005F 4F                mov X,SP
+ 0060 3802              add SP,2
+ 0062                   .dbline 33
+ 0062           ; }
+ 0062           ; 
+ 0062           ; 
+ 0062           ; 
+ 0062           ; WORD Timer_GetTime(void)
+ 0062           ; {
+ 0062                   .dbline 35
+ 0062           ;       WORD time;
+ 0062           ;       Timer_Enable(FALSE);
+ 0062 5000              mov A,0
+ 0064 08                push A
+ 0065 9FB2              xcall _Timer_Enable
+ 0067 38FF              add SP,-1
+ 0069                   .dbline 36
+ 0069           ;       time=Counter16_1_wReadCounter();
+ 0069 10                push X
+ 006A 7C0000            xcall _Counter16_1_wReadCounter
+ 006D 62D000            mov REG[0xd0],>__r0
+ 0070 5A00              mov [__r0],X
+ 0072 20                pop X
+ 0073 5401              mov [X+1],A
+ 0075 5100              mov A,[__r0]
+ 0077 5400              mov [X+0],A
+ 0079                   .dbline 37
+ 0079           ;       Timer_Enable(TRUE);
+ 0079 5001              mov A,1
+ 007B 08                push A
+ 007C 9F9B              xcall _Timer_Enable
+ 007E 38FF              add SP,-1
+ 0080                   .dbline 38
+ 0080           ;       return time;
+ 0080 62D000            mov REG[0xd0],>__r0
+ 0083 5201              mov A,[X+1]
+ 0085 5300              mov [__r1],A
+ 0087 5200              mov A,[X+0]
+ 0089 5300              mov [__r0],A
+ 008B                   .dbline -2
+ 008B           L7:
+ 008B 38FE              add SP,-2
+ 008D 20                pop X
+ 008E                   .dbline 0 ; func end
+ 008E 7F                ret
+ 008F                   .dbsym l time 0 i
+ 008F                   .dbend
+ 008F                   .dbfunc e Timer_SetCallback _Timer_SetCallback fV
+ 008F           ;          cb_fn -> X-5
+ 008F           _Timer_SetCallback::
+ 008F                   .dbline -1
+ 008F 10                push X
+ 0090 4F                mov X,SP
+ 0091                   .dbline 42
+ 0091           ; }
+ 0091           ; 
+ 0091           ; void Timer_SetCallback(tmr_callback_t cb_fn)
+ 0091           ; {
+ 0091                   .dbline 43
+ 0091           ;       timer_cb=cb_fn;
+ 0091 62D000            mov REG[0xd0],>_timer_cb
+ 0094 52FC              mov A,[X-4]
+ 0096 5301              mov [_timer_cb+1],A
+ 0098 52FB              mov A,[X-5]
+ 009A 5300              mov [_timer_cb],A
+ 009C                   .dbline -2
+ 009C           L8:
+ 009C 20                pop X
+ 009D                   .dbline 0 ; func end
+ 009D 7F                ret
+ 009E                   .dbsym l cb_fn -5 pfV
+ 009E                   .dbend
+ 009E                   .dbfunc e Sleep_Timer_Interrupt _Sleep_Timer_Interrupt fV
+ 009E           _Sleep_Timer_Interrupt::
+ 009E                   .dbline -1
+ 009E 71C0              or F,-64
+ 00A0 08                push A
+ 00A1 5DD0              mov A,REG[0xd0]
+ 00A3 08                push A
+ 00A4 5DD3              mov A,REG[0xd3]
+ 00A6 08                push A
+ 00A7 5DD4              mov A,REG[0xd4]
+ 00A9 08                push A
+ 00AA 5DD5              mov A,REG[0xd5]
+ 00AC 08                push A
+ 00AD 62D000            mov REG[0xd0],>__r0
+ 00B0 5100              mov A,[__r0]
+ 00B2 08                push A
+ 00B3 5100              mov A,[__r1]
+ 00B5 08                push A
+ 00B6 5100              mov A,[__r2]
+ 00B8 08                push A
+ 00B9 5100              mov A,[__r3]
+ 00BB 08                push A
+ 00BC 5100              mov A,[__r4]
+ 00BE 08                push A
+ 00BF 5100              mov A,[__r5]
+ 00C1 08                push A
+ 00C2 5100              mov A,[__r6]
+ 00C4 08                push A
+ 00C5 5100              mov A,[__r7]
+ 00C7 08                push A
+ 00C8 5100              mov A,[__r8]
+ 00CA 08                push A
+ 00CB 5100              mov A,[__r9]
+ 00CD 08                push A
+ 00CE 5100              mov A,[__r10]
+ 00D0 08                push A
+ 00D1 5100              mov A,[__r11]
+ 00D3 08                push A
+ 00D4 5100              mov A,[__rX]
+ 00D6 08                push A
+ 00D7 5100              mov A,[__rY]
+ 00D9 08                push A
+ 00DA 5100              mov A,[__rZ]
+ 00DC 08                push A
+ 00DD                   .dbline 50
+ 00DD           ; }
+ 00DD           ; 
+ 00DD           ; #pragma interrupt_handler Sleep_Timer_Interrupt
+ 00DD           ; 
+ 00DD           ; //interrupt handler on TC of LSB
+ 00DD           ; void Sleep_Timer_Interrupt(void )
+ 00DD           ; {
+ 00DD                   .dbline 51
+ 00DD           ;       systic++;
+ 00DD 62D000            mov REG[0xd0],>_systic
+ 00E0 7601              inc [_systic+1]
+ 00E2 0E0000            adc [_systic],0
+ 00E5                   .dbline 52
+ 00E5           ;       ser_Tic();
+ 00E5 7C0000            xcall _ser_Tic
+ 00E8                   .dbline -2
+ 00E8           L9:
+ 00E8 62D000            mov REG[0xD0],>__r0
+ 00EB 18                pop A
+ 00EC 5300              mov [__rZ],A
+ 00EE 18                pop A
+ 00EF 5300              mov [__rY],A
+ 00F1 18                pop A
+ 00F2 5300              mov [__rX],A
+ 00F4 18                pop A
+ 00F5 5300              mov [__r11],A
+ 00F7 18                pop A
+ 00F8 5300              mov [__r10],A
+ 00FA 18                pop A
+ 00FB 5300              mov [__r9],A
+ 00FD 18                pop A
+ 00FE 5300              mov [__r8],A
+ 0100 18                pop A
+ 0101 5300              mov [__r7],A
+ 0103 18                pop A
+ 0104 5300              mov [__r6],A
+ 0106 18                pop A
+ 0107 5300              mov [__r5],A
+ 0109 18                pop A
+ 010A 5300              mov [__r4],A
+ 010C 18                pop A
+ 010D 5300              mov [__r3],A
+ 010F 18                pop A
+ 0110 5300              mov [__r2],A
+ 0112 18                pop A
+ 0113 5300              mov [__r1],A
+ 0115 18                pop A
+ 0116 5300              mov [__r0],A
+ 0118 18                pop A
+ 0119 60D5              mov REG[213],A
+ 011B 18                pop A
+ 011C 60D4              mov REG[212],A
+ 011E 18                pop A
+ 011F 60D3              mov REG[211],A
+ 0121 18                pop A
+ 0122 60D0              mov REG[208],A
+ 0124 18                pop A
+ 0125                   .dbline 0 ; func end
+ 0125 7E                reti
+ 0126                   .dbend
+ 0126                   .dbfunc e Counter16_1_Interrupt _Counter16_1_Interrupt fV
+ 0126           _Counter16_1_Interrupt::
+ 0126                   .dbline -1
+ 0126 71C0              or F,-64
+ 0128 08                push A
+ 0129 5DD0              mov A,REG[0xd0]
+ 012B 08                push A
+ 012C 5DD3              mov A,REG[0xd3]
+ 012E 08                push A
+ 012F 5DD4              mov A,REG[0xd4]
+ 0131 08                push A
+ 0132 5DD5              mov A,REG[0xd5]
+ 0134 08                push A
+ 0135 62D000            mov REG[0xd0],>__r0
+ 0138 5100              mov A,[__r0]
+ 013A 08                push A
+ 013B 5100              mov A,[__r1]
+ 013D 08                push A
+ 013E 5100              mov A,[__r2]
+ 0140 08                push A
+ 0141 5100              mov A,[__r3]
+ 0143 08                push A
+ 0144 5100              mov A,[__r4]
+ 0146 08                push A
+ 0147 5100              mov A,[__r5]
+ 0149 08                push A
+ 014A 5100              mov A,[__r6]
+ 014C 08                push A
+ 014D 5100              mov A,[__r7]
+ 014F 08                push A
+ 0150 5100              mov A,[__r8]
+ 0152 08                push A
+ 0153 5100              mov A,[__r9]
+ 0155 08                push A
+ 0156 5100              mov A,[__r10]
+ 0158 08                push A
+ 0159 5100              mov A,[__r11]
+ 015B 08                push A
+ 015C 5100              mov A,[__rX]
+ 015E 08                push A
+ 015F 5100              mov A,[__rY]
+ 0161 08                push A
+ 0162 5100              mov A,[__rZ]
+ 0164 08                push A
+ 0165                   .dbline 58
+ 0165           ; }
+ 0165           ; 
+ 0165           ; #pragma interrupt_handler Counter16_1_Interrupt
+ 0165           ; 
+ 0165           ; void Counter16_1_Interrupt(void)
+ 0165           ; {
+ 0165                   .dbline 59
+ 0165           ;       if(timer_cb!=0)
+ 0165 62D000            mov REG[0xd0],>_timer_cb
+ 0168 5101              mov A,[_timer_cb+1]
+ 016A 08                push A
+ 016B 5100              mov A,[_timer_cb]
+ 016D 62D000            mov REG[0xd0],>__r0
+ 0170 5300              mov [__r0],A
+ 0172 18                pop A
+ 0173 5300              mov [__r1],A
+ 0175 5100              mov A,[__r0]
+ 0177 10                push X
+ 0178 5800              mov X,[__r1]
+ 017A 08                push A
+ 017B 28                romx
+ 017C 5300              mov [__r0],A
+ 017E 18                pop A
+ 017F 75                inc X
+ 0180 0900              adc A,0
+ 0182 28                romx
+ 0183 20                pop X
+ 0184 3C0000            cmp [__r0],0
+ 0187 B005              jnz X0
+ 0189 3900              cmp A,0
+ 018B A017              jz L11
+ 018D           X0:
+ 018D                   .dbline 60
+ 018D           ;               timer_cb();
+ 018D 62D000            mov REG[0xd0],>_timer_cb
+ 0190 5101              mov A,[_timer_cb+1]
+ 0192 08                push A
+ 0193 5100              mov A,[_timer_cb]
+ 0195 62D000            mov REG[0xd0],>__r0
+ 0198 5300              mov [__r0],A
+ 019A 18                pop A
+ 019B 10                push X
+ 019C 5C                mov X,A
+ 019D 5100              mov A,[__r0]
+ 019F 7C0000            xcall __plcall
+ 01A2 20                pop X
+ 01A3           L11:
+ 01A3                   .dbline -2
+ 01A3           L10:
+ 01A3 62D000            mov REG[0xD0],>__r0
+ 01A6 18                pop A
+ 01A7 5300              mov [__rZ],A
+ 01A9 18                pop A
+ 01AA 5300              mov [__rY],A
+ 01AC 18                pop A
+ 01AD 5300              mov [__rX],A
+ 01AF 18                pop A
+ 01B0 5300              mov [__r11],A
+ 01B2 18                pop A
+ 01B3 5300              mov [__r10],A
+ 01B5 18                pop A
+ 01B6 5300              mov [__r9],A
+ 01B8 18                pop A
+ 01B9 5300              mov [__r8],A
+ 01BB 18                pop A
+ 01BC 5300              mov [__r7],A
+ 01BE 18                pop A
+ 01BF 5300              mov [__r6],A
+ 01C1 18                pop A
+ 01C2 5300              mov [__r5],A
+ 01C4 18                pop A
+ 01C5 5300              mov [__r4],A
+ 01C7 18                pop A
+ 01C8 5300              mov [__r3],A
+ 01CA 18                pop A
+ 01CB 5300              mov [__r2],A
+ 01CD 18                pop A
+ 01CE 5300              mov [__r1],A
+ 01D0 18                pop A
+ 01D1 5300              mov [__r0],A
+ 01D3 18                pop A
+ 01D4 60D5              mov REG[213],A
+ 01D6 18                pop A
+ 01D7 60D4              mov REG[212],A
+ 01D9 18                pop A
+ 01DA 60D3              mov REG[211],A
+ 01DC 18                pop A
+ 01DD 60D0              mov REG[208],A
+ 01DF 18                pop A
+ 01E0                   .dbline 0 ; func end
+ 01E0 7E                reti
+ 01E1                   .dbend
+                        .area data(ram, con, rel)
+ 0000                   .dbfile C:\Users\Ralf\DOCUME~1\DSM_SA~1\DSM_SA~1\DSM_SA~1\timer.c
+ 0000           _cnt_last::
+ 0000 0000              .byte 0,0
+ 0002                   .dbsym e cnt_last _cnt_last i
+                        .area func_lit(rom, con, rel, proclab)
+ 0000 0000      PL0:    .word 0

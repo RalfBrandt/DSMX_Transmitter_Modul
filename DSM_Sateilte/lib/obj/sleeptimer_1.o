@@ -1,0 +1,151 @@
+XH
+H 2 areas 30 global symbols
+M sleeptimer_1.asm
+S SleepTimer_1_bTimerValue Ref0000
+S SleepTimer_1_TickCount Ref0000
+S SleepTimer_1_fTick Ref0000
+S SleepTimer_1_bCountDown Ref0000
+A text size 0 flags 0
+dbfile lib/sleeptimer_1.asm
+dbfunc 0 ? 0 I
+dbfile SleepTimer_1.inc
+dbfunc 0 ? 0 I
+dbfile f:/PROGRA~1/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C21~3/m8c.inc
+dbfunc 0 ? 0 I
+dbfile ./lib/SleepTimer_1.inc
+dbfunc 0 ? 0 I
+dbfile lib/sleeptimer_1.asm
+dbfunc 0 ? 0 I
+dbfile memory.inc
+dbfunc 0 ? 0 I
+dbfile lib/sleeptimer_1.asm
+dbfunc 0 ? 0 I
+dbfile f:/PROGRA~1/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C21~3/m8c.inc
+dbfunc 0 ? 0 I
+A UserModules size 72 flags 0
+dbfile lib/sleeptimer_1.asm
+dbfunc 0 ? 0 I
+dbline 2 0
+dbline 87 3
+dbline 2 4
+dbline A4 7
+dbline 3 8
+dbline C6 B
+dbline C7 D
+dbline C8 F
+dbline C9 11
+dbline CA 13
+dbline CC 15
+dbline D7 17
+dbline F3 18
+dbline 10D 19
+dbline 10E 1B
+dbline 10F 1C
+dbline 2 1D
+dbline 111 1F
+dbline 112 21
+dbline 113 23
+dbline 114 25
+dbline 2 27
+dbline 116 29
+dbline 3 2A
+dbline 4 2C
+dbline 118 2E
+dbline 3 2F
+dbline 13B 32
+dbline 13E 35
+dbline 13F 38
+dbline 140 3A
+dbline 141 3D
+dbline 142 3E
+dbline 145 40
+dbline 3 41
+dbline 16E 44
+dbline 16F 45
+dbline 170 47
+dbline 173 49
+dbline 174 4C
+dbline 178 4E
+dbline 179 4F
+dbline 17C 51
+dbline 3 52
+dbline 1A0 55
+dbline 1A2 57
+dbline 3 58
+dbline 1C4 5B
+dbline 1C6 5D
+dbline 3 5E
+dbline 1E8 61
+dbline 1EA 63
+dbline 3 64
+dbline 2 67
+dbline 211 6A
+dbline 212 6C
+dbline 2 6E
+dbline 215 71
+S SleepTimer_1_TickWait Def002F
+S $sb$SleepTimer_1_Start Def0008
+S SleepTimer_1_SetTimer Def0058
+S $se$SleepTimer_1_Start Def0018
+S SleepTimer_1_SyncWait Def0041
+S $sb$SleepTimer_1_TickWait Def002F
+S _SleepTimer_1_DisableInt Def0004
+S $se$SleepTimer_1_TickWait Def0041
+S $sb$SleepTimer_1_SetTimer Def0058
+S $se$SleepTimer_1_SetTimer Def005E
+S $sb$SleepTimer_1_SyncWait Def0041
+S $se$SleepTimer_1_SyncWait Def0052
+S _SleepTimer_1_Start Def0008
+S SleepTimer_1_SetInterval Def0019
+S SleepTimer_1_EnableInt Def0000
+S _SleepTimer_1_TickWait Def002F
+S SleepTimer_1_bGetTimer Def005E
+S _SleepTimer_1_SetTimer Def0058
+S $sb$SleepTimer_1_SetInterval Def0019
+S $sb$SleepTimer_1_EnableInt Def0000
+S $se$SleepTimer_1_SetInterval Def002F
+S _SleepTimer_1_SyncWait Def0041
+S $se$SleepTimer_1_EnableInt Def0004
+S $sb$SleepTimer_1_bGetTimer Def005E
+S $se$SleepTimer_1_bGetTimer Def0064
+S SleepTimer_1_bGetTickCntr Def0052
+S SleepTimer_1_Stop Def0018
+S SleepTimer_1_iGetTickCntr Def0064
+S $sb$SleepTimer_1_bGetTickCntr Def0052
+S $sb$SleepTimer_1_Stop Def0018
+S $se$SleepTimer_1_bGetTickCntr Def0058
+S $se$SleepTimer_1_Stop Def0019
+S $sb$SleepTimer_1_iGetTickCntr Def0064
+S $se$SleepTimer_1_iGetTickCntr Def0072
+S _SleepTimer_1_SetInterval Def0019
+S _SleepTimer_1_EnableInt Def0000
+S SleepTimer_1_DisableInt Def0004
+S _SleepTimer_1_bGetTimer Def005E
+S $sb$SleepTimer_1_DisableInt Def0004
+S $se$SleepTimer_1_DisableInt Def0008
+S _SleepTimer_1_bGetTickCntr Def0052
+S _SleepTimer_1_Stop Def0018
+S _SleepTimer_1_iGetTickCntr Def0064
+S SleepTimer_1_Start Def0008
+T 00 00 43 E0 40 7F 41 E0 BF 7F 62 D0 00 00 50 00
+R 00 00 00 01 43 0C 00 02
+T 00 0D 53 00 00 53 00 00 53 00 00 53
+R 00 00 00 01 03 03 00 02 03 06 00 00 03 09 00 03
+T 00 14 00 01 53 00 00 7F 7F 21 18 4F 08 71 10 5D
+R 00 00 00 01 03 02 00 01 03 05 00 01
+T 00 20 E0 21 E7 2B 00 60 E0 70 EF 18 70 3F 71 C0
+R 00 00 00 01
+T 00 2E 7F 62 D0 00 00 55 00 00 00 47 00 00 FF AF
+R 00 00 00 01 43 05 00 02 03 08 00 02 03 0C 00 02
+T 00 39 FC 55 00 00 00 78 BF F6 7F 62 D0 00 00 4B
+R 00 00 00 01 03 04 00 02 43 0D 00 03
+T 00 45 21 01 B0 06 47 00 00 FF BF FC 4B 53 00 00
+R 00 00 00 01 03 07 00 03 03 0E 00 03
+T 00 51 7F 62 D0 00 00 51 00 01 7F 62 D0 00 00 53
+R 00 00 00 01 43 05 00 01 03 08 00 01 43 0D 00 01
+T 00 5C 00 00 7F 62 D0 00 00 51 00 00 7F 62 D0
+R 00 00 00 01 03 02 00 00 43 07 00 01 03 0A 00 00
+T 00 66 00 00 41 E0 BF 51 00 01 58 00 00 43 E0 40
+R 00 00 00 01 43 02 00 01 03 08 00 01 03 0B 00 01
+T 00 71 7F
+R 00 00 00 01

@@ -1,0 +1,9 @@
+flash 1983 SRAM    A:
+ 00 39 bytes
+flash 1987 SRAM   40:
+ 00 29 bytes
+flash 198B SRAM   5D:
+ <size at next line>  10 C3
+  [size:] 2 bytes
+flash 1990 SRAM   5F:
+ 00 16 bytes

@@ -1,0 +1,79 @@
+XH
+H 2 areas 15 global symbols
+M rst.asm
+S Port_0_Data_SHADE Ref0000
+A text size 0 flags 0
+dbfile lib/rst.asm
+dbfunc 0 ? 0 I
+dbfile memory.inc
+dbfunc 0 ? 0 I
+dbfile lib/rst.asm
+dbfunc 0 ? 0 I
+dbfile RST.inc
+dbfunc 0 ? 0 I
+dbfile f:/PROGRA~1/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C21~3/m8c.inc
+dbfunc 0 ? 0 I
+dbfile ./lib/RST.inc
+dbfunc 0 ? 0 I
+A UserModules size 3D flags 0
+dbfile lib/rst.asm
+dbfunc 0 ? 0 I
+dbline 50 0
+dbline 51 2
+dbline 59 4
+dbline 3 6
+dbline 61 9
+dbline 62 B
+dbline 66 D
+dbline 6A 10
+dbline 6E 12
+dbline 74 15
+dbline 75 17
+dbline 3 19
+dbline 4 1B
+dbline 79 1D
+dbline 3 1E
+dbline 95 21
+dbline 96 24
+dbline 97 26
+dbline 3 28
+dbline 4 2A
+dbline 9B 2C
+dbline 3 2D
+dbline B6 30
+dbline BC 32
+dbline BD 34
+dbline BE 36
+dbline 3 38
+dbline 4 3A
+dbline C3 3C
+S RST_On Def0000
+S _RST_Switch Def0006
+S _RST_Invert Def001E
+S $sb$_RST_Invert Def001E
+S $se$_RST_Invert Def002D
+S _RST_Stop Def0004
+S RST_Start Def0004
+S RST_Off Def0004
+S _RST_On Def0000
+S RST_GetState Def002D
+S $sb$_RST_On Def0000
+S $se$_RST_On Def001E
+S _RST_Start Def0004
+S RST_Switch Def0006
+S RST_Invert Def001E
+S _RST_Off Def0004
+S _RST_GetState Def002D
+S $sb$_RST_GetState Def002D
+S $se$_RST_GetState Def003D
+S RST_Stop Def0004
+T 00 00 50 01 80 03 50 00 62 D0 00 00 29 00 A0 06
+R 00 00 00 01 43 0A 00 00
+T 00 0D 2E 00 00 10 80 04 26 00 00 EF 51 00 00 60
+R 00 00 00 01 03 03 00 00 03 09 00 00 03 0D 00 00
+T 00 18 00 70 3F 71 C0 7F 62 D0 00 00 36 00 00 10
+R 00 00 00 01 43 0A 00 00 03 0D 00 00
+T 00 24 51 00 00 60 00 70 3F 71 C0 7F 62 D0 00 00
+R 00 00 00 01 03 03 00 00 43 0E 00 00
+T 00 30 51 00 00 21 10 A0 03 50 01 70 3F 71 C0 7F
+R 00 00 00 01 03 03 00 00

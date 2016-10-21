@@ -1,0 +1,74 @@
+Starting MAKE...
+creating project.mk -- no changes
+
+Linking..
+
+symbol Counter16_1_wReadCompareValue is unused
+
+symbol RX8_1_bReadRxStatus is unused
+
+symbol Counter16_1_WriteCompareValue is unused
+
+symbol _CS_PIN_Invert is unused
+
+symbol RX8_1_cReadChar is unused
+
+symbol RX8_1_iReadChar is unused
+
+symbol _LED_1_GetState is unused
+
+symbol FlashReadBlock is unused
+
+symbol SleepTimer_1_SetInterval is unused
+
+symbol RX8_1_Stop is unused
+
+symbol SleepTimer_1_bGetTickCntr is unused
+
+symbol SleepTimer_1_iGetTickCntr is unused
+
+symbol SPIM_1_EnableInt is unused
+
+symbol RX8_1_DisableInt is unused
+
+symbol _CS_PIN_GetState is unused
+
+symbol SPIM_1_Stop is unused
+
+symbol RX8_1_bReadRxData is unused
+
+symbol SPIM_1_DisableInt is unused
+
+symbol Counter16_1_DisableInt is unused
+
+symbol SleepTimer_1_SetTimer is unused
+
+symbol SleepTimer_1_SyncWait is unused
+
+symbol _RST_Invert is unused
+
+symbol E2PROM_1_Stop is unused
+
+symbol SleepTimer_1_bGetTimer is unused
+
+symbol SleepTimer_1_Stop is unused
+
+symbol SleepTimer_1_DisableInt is unused
+
+symbol _RST_GetState is unused
+
+symbol _LED_1_On is unused
+
+299 bytes unused code deleted
+
+7169 bytes before Code Compression, 6820 after. 0% reduction.
+
+  ROM 93% full. 7613 out of 8192 bytes used (does not include absolute areas).
+
+  RAM 59% full. 151 bytes used (does not include stack usage).
+
+Built with ICCM8C STD V7.05.00
+
+ 
+DSM_Sateilte - 0 error(s) 0 warning(s) 20:20:42
+
