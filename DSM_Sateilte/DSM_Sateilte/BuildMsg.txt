@@ -1,5 +1,41 @@
 Starting MAKE...
-creating project.mk -- no changes
+creating project.mk 
+
+lib/counter16_1.asm
+
+lib/counter16_1int.asm
+
+lib/cs_pin.asm
+
+lib/diag_out1.asm
+
+lib/e2prom_1.asm
+
+lib/led_1.asm
+
+lib/psocconfig.asm
+
+lib/psocconfigtbl.asm
+
+lib/psocgpioint.asm
+
+lib/rst.asm
+
+lib/rx8_1.asm
+
+lib/rx8_1int.asm
+
+lib/rx8_1plus.asm
+
+lib/sleeptimer_1.asm
+
+lib/sleeptimer_1int.asm
+
+lib/spim_1.asm
+
+lib/tx8sw_1.asm
+
+./boot.asm
 
 Linking..
 
@@ -63,12 +99,15 @@ symbol _LED_1_On is unused
 
 7169 bytes before Code Compression, 6820 after. 0% reduction.
 
-  ROM 93% full. 7613 out of 8192 bytes used (does not include absolute areas).
+  ROM 93% full. 7607 out of 8192 bytes used (does not include absolute areas).
 
   RAM 59% full. 151 bytes used (does not include stack usage).
 
 Built with ICCM8C STD V7.05.00
 
  
-DSM_Sateilte - 0 error(s) 0 warning(s) 20:20:42
+DSM_Sateilte - 0 error(s) 0 warning(s) 20:18:01
+
+Performing Project Clean...
+done
 

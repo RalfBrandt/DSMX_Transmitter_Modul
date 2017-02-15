@@ -2,4 +2,4 @@
  -bdata:0.0xFF -rwh:SSCParmBlk:0x00F7.0x00FF  -O -elim:UserModules 
  -o"output/DSM_Sateilte" 
 obj/config.o obj/cyrf6936.o obj/delay.o obj/dsm.o obj/main.o obj/serial.o obj/timer.o 	
- ./lib/libPSoc.a -Lf:/PROGRA~1/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/lib/SMM f:/PROGRA~1/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/lib/CY8C21030/cms.a f:/PROGRA~1/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/lib/SMM/UASW/NoMAC/arith.a  
+ ./lib/libPSoc.a -Le:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/lib/SMM e:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/lib/CY8C21030/cms.a e:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/lib/SMM/UASW/NoMAC/arith.a  
